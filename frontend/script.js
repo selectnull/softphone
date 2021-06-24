@@ -25,10 +25,10 @@ var btnHangup   = $('#hangup');     // Btn to end the call
 // Check if browser has audio/video support
 // ========================================
 function hasGetUserMedia() {
-    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 if (!hasGetUserMedia()) {
-    alert("getUserMedia() is not supported by your browser");
+  alert("getUserMedia() is not supported by your browser");
 }
 
 // ======================================
@@ -36,9 +36,9 @@ if (!hasGetUserMedia()) {
 // ======================================
 var socket = new JsSIP.WebSocketInterface(webrtcSocket);
 var configuration = {
-    sockets  : [ socket ],
-    uri      : webrtcUser+webrtcHost,
-    password : webrtcPass,
+  sockets: [ socket ],
+  uri: webrtcUser+webrtcHost,
+  password: webrtcPass,
   session_timers: false // If set to true, call will end after a minute or so
 };
 
@@ -49,47 +49,46 @@ ua.start();
 // If user agent was not successfully registrated
 // ==============================================
 ua.on('registrationFailed', function(e){
-    console.log("registrationFailed");
-    console.log(e);
+  console.log("registrationFailed");
+  console.log(e);
 });
 
 // ========================================
 // Check for incoming and outgoing sessions
 // ========================================
 ua.on('newRTCSession', function(e){
-    session = e.session;
+  session = e.session;
 
-    // Bind events specific to this session
-    bindSessionEvents(session);
+  // Bind events specific to this session
+  bindSessionEvents(session);
 
-    // Check if session is initiated by a remote or local host
-    if (e.originator === "remote") {
+  // Check if session is initiated by a remote or local host
+  if (e.originator === "remote") {
 
-        // Check if incoming call is you doing an outbound call
-        if (session.remote_identity.uri.user === inoutnumber ) {
+    // Check if incoming call is you doing an outbound call
+    if (session.remote_identity.uri.user === inoutnumber ) {
 
-            // set status message
-            set_status("Calling..");
+      // set status message
+      set_status("Calling..");
 
-            // Answer the call automatically
-            answer_call();
+      // Answer the call automatically
+      answer_call();
 
-        } else {
+    } else {
 
-            // Show/hide buttons
-            btnPickup.trigger("show");
-            btnHangup.trigger("show");
-            btnCall.trigger("hide");
+      // Show/hide buttons
+      btnPickup.trigger("show");
+      btnHangup.trigger("show");
+      btnCall.trigger("hide");
 
-            // Set status message
-            set_status("Incoming call from " +session.remote_identity.uri.user);
-        }
-
-    } else if (e.originator === "local") {
-
-            // Set status message
-            set_status("Calling..");
+      // Set status message
+      set_status("Incoming call from " +session.remote_identity.uri.user);
     }
+  } else if (e.originator === "local") {
+
+    // Set status message
+    set_status("Calling..");
+  }
 });
 
 
@@ -97,40 +96,39 @@ ua.on('newRTCSession', function(e){
 // Make an outgoing call
 // =====================
 function make_call(){
+  connectData = {"connect": $("#to").val()};
 
-    connectData = {"connect": $("#to").val()};
-
-    $.post({
-        url: window.location.href + "forward.php",
-        method: "POST",
-        data:{
-            voice_start: JSON.stringify(connectData),
-            to: "+"+webrtcUser,
-            from: inoutnumber,
-        }
-    });
+  $.post({
+    url: window.location.href + "forward.php",
+    method: "POST",
+    data: {
+      voice_start: JSON.stringify(connectData),
+      to: "+"+webrtcUser,
+      from: inoutnumber,
+    }
+  });
 }
 
 // ========
 // END CALL
 // ========
 function end_call(){
-    session.terminate();
+  session.terminate();
 }
 
 // ===========
 // ANSWER CALL
 // ===========
 function answer_call(){
-    var options = {localStream, constraints};
-    session.answer(options);
+  var options = {localStream, constraints};
+  session.answer(options);
 }
 
 // =============================
 // SET STATUS MESSAGE ON SCREEN
 // =============================
 function set_status(msg){
-    $("#status").html(msg);
+  $("#status").html(msg);
 }
 
 // ==================
@@ -139,12 +137,12 @@ function set_status(msg){
 
 // On hide buttons (show them as disabled)
 btnPickup.add(btnHangup).add(btnCall).on("hide", function(){
-    $(this).attr("disabled", true);
+  $(this).attr("disabled", true);
 });
 
 // On show buttons (show them as enabled)
 btnPickup.add(btnHangup).add(btnCall).on("show", function(){
-    $(this).attr("disabled", false);
+  $(this).attr("disabled", false);
 });
 
 // Hide these buttons by default
@@ -155,93 +153,82 @@ btnHangup.trigger("hide");
 // ===================================
 // Bind events for the current session
 // ===================================
-function bindSessionEvents(session){
-
-    // When you deny premission for microphone and/or video
-    session.on('getusermediafailed', function(){
-        session.terminate();
-        set_status("No premission to access camera or microphone");
-    });
-
-
-    // When call is answered
-    session.on('confirmed', function() {
-
-        // Show/hide buttons
-        btnPickup.trigger("hide");
-        btnHangup.trigger("show");
-        btnCall.trigger("hide");
-
-        // If then call is an incoming call
-        if(session.remote_identity.uri.user !== inoutnumber) {
-            set_status("Call answered");
-        }
-    });
+function bindSessionEvents(session) {
+  // When you deny premission for microphone and/or video
+  session.on('getusermediafailed', function(){
+    session.terminate();
+    set_status("No premission to access camera or microphone");
+  });
 
 
-    // When session ends after session is confirmed
-    session.on('ended', function() {
+  // When call is answered
+  session.on('confirmed', function() {
+    // Show/hide buttons
+    btnPickup.trigger("hide");
+    btnHangup.trigger("show");
+    btnCall.trigger("hide");
 
-        // Show/hide buttons
-        btnPickup.trigger("hide");
-        btnHangup.trigger("hide");
-        btnCall.trigger("show");
-
-        // Update status message
-        set_status("Call is ended");
-
-        // Hide status message after 5 seconds
-        setTimeout(function() {
-            set_status("");
-        }, 5000);
-    });
+    // If then call is an incoming call
+    if(session.remote_identity.uri.user !== inoutnumber) {
+      set_status("Call answered");
+    }
+  });
 
 
-    // When session ends before session is confirmed
-    session.on('failed', function() {
+  // When session ends after session is confirmed
+  session.on('ended', function() {
+    // Show/hide buttons
+    btnPickup.trigger("hide");
+    btnHangup.trigger("hide");
+    btnCall.trigger("show");
 
-        // Show/hide buttons
-        btnPickup.trigger("hide");
-        btnHangup.trigger("hide");
-        btnCall.trigger("show");
+    // Update status message
+    set_status("Call is ended");
 
-        // Update status message
-        set_status("Call failed");
-
-        // Hide status message after 5 seconds
-        setTimeout(function() {
-            set_status("");
-        }, 5000);
-
-    });
+    // Hide status message after 5 seconds
+    setTimeout(function() {
+      set_status("");
+    }, 5000);
+  });
 
 
-    // When connected to peer
-    session.on('peerconnection', function(e) {
+  // When session ends before session is confirmed
+  session.on('failed', function() {
+    // Show/hide buttons
+    btnPickup.trigger("hide");
+    btnHangup.trigger("hide");
+    btnCall.trigger("show");
 
-        // Check if an audio track is present from peer
-        e.peerconnection.ontrack = () => {
+    // Update status message
+    set_status("Call failed");
 
-            // Create a new media stream to store audio
-            var remoteStream = new MediaStream();
-
-            // Get every audio track from peer and save it in remoteStream
-            e.peerconnection.getReceivers().forEach((receiver) => {
-                remoteStream.addTrack(receiver.track);
-            });
-
-             // Get hidden audio track on the page
-            var remoteAudio = document.getElementById("remoteAudio");
-
-            // Add the media stream to the audio element
-            remoteAudio.srcObject = remoteStream;
-
-            // Press play to hear the audio
-            remoteAudio.play();
-
-        };
-
-    });
+    // Hide status message after 5 seconds
+    setTimeout(function() {
+      set_status("");
+    }, 5000);
+  });
 
 
+  // When connected to peer
+  session.on('peerconnection', function(e) {
+    // Check if an audio track is present from peer
+    e.peerconnection.ontrack = () => {
+      // Create a new media stream to store audio
+      var remoteStream = new MediaStream();
+
+      // Get every audio track from peer and save it in remoteStream
+      e.peerconnection.getReceivers().forEach((receiver) => {
+        remoteStream.addTrack(receiver.track);
+      });
+
+       // Get hidden audio track on the page
+      var remoteAudio = document.getElementById("remoteAudio");
+
+      // Add the media stream to the audio element
+      remoteAudio.srcObject = remoteStream;
+
+      // Press play to hear the audio
+      remoteAudio.play();
+    };
+  });
 }
