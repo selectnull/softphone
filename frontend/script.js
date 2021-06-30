@@ -1,14 +1,16 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 //====================================================
 // Set your credentials
 //====================================================
 
-var inoutnumber     = 'VIRTUAL_NUMBER';
-var webrtcUser      = 'WEBRTC_USER';
-var webrtcPass      = 'WEBRTC_PASS';
+var inoutnumber     = localStorage.getItem('phoneNumber');
+var webrtcUser      = localStorage.getItem('webrtcUsername');
+var webrtcPass      = localStorage.getItem('webrtcPassword');
 var webrtcHost      = '@voip.46elks.com';
 var webrtcSocket    = 'wss://voip.46elks.com/w1/websocket';
+let apiUsername = localStorage.getItem('apiUsername');
+let apiPassword = localStorage.getItem('apiPassword');
 
 //====================================================
 
@@ -20,6 +22,9 @@ var constraints = {video: false, audio: true}; // Promise to send to peer
 var btnCall         = $('#call');           // Btn to answer the call
 var btnPickup   = $('#pickup');     // Btn to answer the call
 var btnHangup   = $('#hangup');     // Btn to end the call
+
+
+let phoneNumber = document.querySelector('#to');
 
 // ========================================
 // Check if browser has audio/video support
@@ -96,16 +101,20 @@ ua.on('newRTCSession', function(e){
 // Make an outgoing call
 // =====================
 function make_call(){
-  connectData = {"connect": $("#to").val()};
+  connectData = {connect: phoneNumber.value};
 
   $.post({
-    url: window.location.href + "forward.php",
+    url: "/forward",
     method: "POST",
-    data: {
-      voice_start: JSON.stringify(connectData),
-      to: "+"+webrtcUser,
-      from: inoutnumber,
-    }
+    contentType: 'application/json',
+    data: JSON.stringify({
+      voice_start: connectData,
+      // to_number: "+"+webrtcUser,
+      to_number: connectData.connect,
+      from_number: inoutnumber,
+      api_username: apiUsername,
+      api_password: apiPassword
+    })
   });
 }
 
