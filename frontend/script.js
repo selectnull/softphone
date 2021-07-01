@@ -104,13 +104,12 @@ function make_call(){
   connectData = {connect: phoneNumber.value};
 
   $.post({
-    url: "/forward",
+    url: "/api/forward",
     method: "POST",
     contentType: 'application/json',
     data: JSON.stringify({
-      voice_start: connectData,
-      // to_number: "+"+webrtcUser,
-      to_number: connectData.connect,
+      voice_start: JSON.stringify(connectData),
+      to_number: "+"+webrtcUser,
       from_number: inoutnumber,
       api_username: apiUsername,
       api_password: apiPassword

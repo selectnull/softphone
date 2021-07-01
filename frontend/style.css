@@ -19,7 +19,13 @@ section{
 	font-size: 1.5rem;
 }
 
+label {
+    display: block;
+    color: #bbbbbb;
+}
+
 input{
+    margin-bottom: 20px;
 	padding: 5px 10px;
 	border: none;
 	box-shadow: none;

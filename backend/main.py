@@ -15,22 +15,24 @@ class VoiceStart(BaseModel):
 class Call(BaseModel):
     from_number: str
     to_number: str
-    voice_start: VoiceStart
+    voice_start: str
     api_username: str
     api_password: str
 
 
-@app.post('/forward')
+@app.get('/api/status')
+async def status():
+    return {'status': 'ok', 'version': 1}
+
+
+@app.post('/api/forward')
 async def forward(call: Call):
-    # get 46elks username and password
-    print(call)
     auth = (call.api_username, call.api_password)
     data = {
         'from': call.from_number,
         'to': call.to_number,
         'voice_start': call.voice_start
     }
-    print(auth, data)
 
     async with httpx.AsyncClient() as client:
         response = await client.post('https://api.46elks.com/a1/calls', auth=auth, data=data)
