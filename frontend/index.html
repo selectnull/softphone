@@ -22,21 +22,26 @@
   </section>
 
   <section id="setup">
-    <h2>Setup</h2>
-    <label for="apiUsername">46elks API username</label>
-    <input id="apiUsername" name="apiUsername" type="text" placeholder="46elks API username"><br>
-    <label for="apiPassword">46elks API password</label>
-    <input id="apiPassword" name="apiPassword" type="password" placeholder="46elks API password"><br>
+    <div class="title">
+      <h2>Setup</h2>
+      <a class="toggle" onclick="Setup.toggle();">Show/Hide</a>
+    </div>
+    <div class="content">
+      <label for="apiUsername">46elks API username</label>
+      <input id="apiUsername" name="apiUsername" type="text" placeholder="46elks API username"><br>
+      <label for="apiPassword">46elks API password</label>
+      <input id="apiPassword" name="apiPassword" type="password" placeholder="46elks API password"><br>
 
-    <label for="webrtcUsername">WebRTC username</label>
-    <input id="webrtcUsername" name="webrtcUsername" type="text" placeholder="WebRTC username"><br>
-    <label for="webrtcPassword">WebRTC password</label>
-    <input id="webrtcPassword" name="webrtcPassword" type="password" placeholder="WebRTC password"><br>
+      <label for="webrtcUsername">WebRTC username</label>
+      <input id="webrtcUsername" name="webrtcUsername" type="text" placeholder="WebRTC username"><br>
+      <label for="webrtcPassword">WebRTC password</label>
+      <input id="webrtcPassword" name="webrtcPassword" type="password" placeholder="WebRTC password"><br>
 
-    <label for="phoneNumber">Phone number</label>
-    <input id="phoneNumber" name="phoneNumber" type="text" placeholder="Phone number"><br>
+      <label for="phoneNumber">Phone number</label>
+      <input id="phoneNumber" name="phoneNumber" type="text" placeholder="Phone number"><br>
 
-    <button id="setup-save" onclick="Setup.save();">Save</button>
+      <button id="setup-save" onclick="Setup.save();">Save</button>
+    </div>
   </section>
 
   <script src="jquery-3.3.1.min.js"></script>

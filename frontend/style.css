@@ -51,3 +51,20 @@ button:disabled{
 a{
 	color: #8188ff;
 }
+
+#setup .content {
+    display: none;
+}
+
+#setup .title {
+    margin-bottom: 1rem;
+}
+
+#setup .title h2 {
+    display: inline;
+}
+
+a.toggle {
+    font-size:0.7rem;
+    cursor: pointer;
+}
