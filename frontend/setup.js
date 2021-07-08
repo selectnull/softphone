@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 class Setup {
   static fields() {
     return Array.from(document.querySelectorAll('#setup .content input')).map(el => el.id);
@@ -17,6 +19,15 @@ class Setup {
 
   static toggle() {
     $('#setup .content').toggle();
+  }
+
+  static asCode() {
+    let code = '';
+    Setup.fields().forEach(field => {
+      let value = localStorage.getItem(field);
+      code += `localStorage.setItem(${field}, "${value}");\n`;
+    });
+    return code;
   }
 }
 
