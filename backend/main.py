@@ -5,6 +5,7 @@ import httpx
 
 from pathlib import Path
 import logging
+import json
 
 from .config import get_var
 
@@ -44,6 +45,10 @@ async def forward(call: Call):
         'voice_start': call.voice_start
     }
 
+    to_number = json.loads(data['voice_start'])['connect']
+    log_msg = f'Outgoing call from {call.from_number} to {to_number}'
+    logging.info(log_msg)
+
     async with httpx.AsyncClient() as client:
         response = await client.post('https://api.46elks.com/a1/calls', auth=auth, data=data)
     return response.json()
@@ -57,7 +62,7 @@ async def receive_call(
     from_number: str=Form(..., alias='from'),
     to_number: str=Form(..., alias='to')
 ):
-    log_msg = f'Call from {from_number} to +{connect_to_phone}'
+    log_msg = f'Incoming call from {from_number} to {to_number}'
     logging.info(log_msg)
     return {
         'connect': f'+{connect_to_phone}'
